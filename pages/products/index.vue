@@ -1,5 +1,5 @@
-<script lang="ts" setup>
-import { useAdmin } from "~~/stores/Admin"
+<script setup>
+import { useAdmin } from "~/stores/Admin"
 
 definePageMeta({
     layout: "dashboard",
@@ -9,27 +9,20 @@ const config = useRuntimeConfig()
 const admin = useAdmin()
 
 const headers = reactive(["Product", 'Name', "Price", "in stock availability", ""])
-let products = reactive([])
 
-const getAllProducts = async () => {
-    await useFetch(`${config.baseUrl}/api/admin/products`, {
-        method: "GET",
-        headers: {
+const { data } = useAsyncData("/products",() => {
+    return $fetch(`${config.baseUrl}/api/admin/products`, {
+         headers: {
             authorization: ` Bearer ${admin.token}`
-        },
-        onResponse({ response }) {
-            products = response._data.data
-            console.log(products);
-            
-            if(response.status === 404) {
-                // 404 catch
-                console.log("404");
-            }
-        },
+        }
     })
-}
-
-getAllProducts()
+},
+{
+    transform(data) {
+        return data.data
+    },
+    lazy: true
+})
 
 </script>
 <template lang="pug">
@@ -40,19 +33,19 @@ NuxtLayout
             button.btn.btn-primary New product
         .products-page-container.w-full.my-5.py-5
             MainTable(:headers="headers")
-                tr(v-for="product in products" :key="product.id")
+                //tr(v-for="product in data" :key="product.id")
                     td
                         .flex.items-center.space-x-3
                             .avatar
                                 .mask.mask-qsuircle.w-12.h-12
                                     img(src="/tailwind-css-component-profile-256w.png")
-                    //td {{ admin.first_name }}
-                    //td {{ admin.last_name }}
-                    //td {{ admin.email }}
-                    //td {{ admin.role }}
+                    td {{ admin.first_name }}
+                    td {{ admin.last_name }}
+                    td {{ admin.email }}
+                    td {{ admin.role }}
                     td
                         button.btn.btn-xs view 
-        .w-full.text-center(v-if="products.length === 0")
+        .w-full.text-center(v-if="data.length === 0")
             span there is no product
 </template>
 <style lang="scss">

@@ -27,6 +27,7 @@ const getAdmins = async () => {
     })
 }
 
+
 getAdmins()
 
 </script>
@@ -44,7 +45,9 @@ NuxtLayout
                     td {{ admin.email }}
                     td {{ admin.role }}
                     td
-                        button.btn.btn-xs view       
+                        button.btn.btn-xs view 
+        .w-full.text-center(v-if="admins.length === 0")
+            span there is no admin
 </template>
 <style lang="scss">
 .admins-page {

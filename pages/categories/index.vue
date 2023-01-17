@@ -12,7 +12,7 @@ const headers = reactive(['Name', "description", "", ""])
 let categories = reactive([])
 
 const getAllCategories = async () => {
-    await useFetch(`${config.baseUrl}/api/admin/categories`, {
+    await useFetch(`${config.baseUrl}/api/admin/products/categories`, {
         method: "GET",
         headers: {
             authorization: ` Bearer ${admin.token}`

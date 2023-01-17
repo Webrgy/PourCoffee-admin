@@ -26,6 +26,9 @@
         .side-bar-items.items(class="flex-grow-0 mt-10")
             li
                 NuxtLink(to="/")
+                    |Dashboard
+            li
+                NuxtLink(to="/products")
                     //IconProducts
                     |Products
             li

@@ -1,0 +1,31 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Carme&family=Cormorant:ital,wght@0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+* {
+    font-family: 'Carme', sans-serif;
+}
+
+html::-webkit-scrollbar, .view::-webkit-scrollbar {
+    display: none;
+}
+  
+  /* Hide scrollbar for IE, Edge and Firefox */
+html, .view {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.formkit-input:not([type="submit"]) {
+    @apply input input-primary w-full;
+}
+.formkit-input[type="submit"] {
+    @apply btn btn-primary w-full;
+}
+.formkit-wrapper {
+    @apply my-2
+}
+.formkit-label {
+    @apply font-bold text-primary-content block my-2;
+}
+.formkit-messages {
+    @apply text-error
+}

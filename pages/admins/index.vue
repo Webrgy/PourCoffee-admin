@@ -8,7 +8,7 @@ definePageMeta({
 const config = useRuntimeConfig()
 const admin = useAdmin()
 
-const headers = reactive(['First Name', "Last Name", "Email", "Role", ""])
+const titles = reactive(['First Name', "Last Name", "Email", "Role", ""])
 
 const  { data }  = useAsyncData("/admins", () => {
     return $fetch(`${config.baseUrl}/api/admin/admins`, {
@@ -22,8 +22,7 @@ const  { data }  = useAsyncData("/admins", () => {
     transform(data) {
         return data.data
     }
-}
-)
+})
 
 </script>
 <template lang="pug">
@@ -33,7 +32,7 @@ NuxtLayout
             h1.text-3xl Admins
             button.btn.btn-primary New admin
         .admin-page-container.w-full.my-5.py-5
-            MainTable(:headers="headers")
+            MainTable(:headers="titles")
                 tr(v-for="admin in data" :key="admin.id")
                     td {{ admin.first_name }}
                     td {{ admin.last_name }}
@@ -41,7 +40,7 @@ NuxtLayout
                     td {{ admin.role }}
                     td
                         button.btn.btn-xs view 
-        .w-full.text-center(v-if="data.length === 0")
+        //.w-full.text-center(v-if="isEmpty")
             span there is no admin
 </template>
 <style lang="scss">

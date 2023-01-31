@@ -3,16 +3,15 @@ import { useAdmin } from "~/stores/Admin"
 
 definePageMeta({
     layout: "dashboard",
-    middleware: "auth"
 })
 const config = useRuntimeConfig()
 const admin = useAdmin()
 
-const headers = reactive(["Product", 'Name', "Price", "in stock availability", ""])
+const titles = reactive(["Product", 'Name', "Price", "in stock availability", ""])
 
 const { data } = useAsyncData("/products",() => {
     return $fetch(`${config.baseUrl}/api/admin/products`, {
-         headers: {
+        headers: {
             authorization: ` Bearer ${admin.token}`
         }
     })
@@ -20,9 +19,9 @@ const { data } = useAsyncData("/products",() => {
 {
     transform(data) {
         return data.data
-    },
-    lazy: true
+    }
 })
+
 
 </script>
 <template lang="pug">
@@ -32,7 +31,7 @@ NuxtLayout
             h1.text-3xl Products
             button.btn.btn-primary New product
         .products-page-container.w-full.my-5.py-5
-            MainTable(:headers="headers")
+            MainTable(:headers="titles")
                 //tr(v-for="product in data" :key="product.id")
                     td
                         .flex.items-center.space-x-3
@@ -45,7 +44,7 @@ NuxtLayout
                     td {{ admin.role }}
                     td
                         button.btn.btn-xs view 
-        .w-full.text-center(v-if="data.length === 0")
+        //.w-full.text-center(v-if="isEmpty")
             span there is no product
 </template>
 <style lang="scss">

@@ -8,11 +8,11 @@ definePageMeta({
 const config = useRuntimeConfig()
 const admin = useAdmin()
 
-const headers = reactive(['Name', "description", "", ""])
+const titles = reactive(['Name', "description", "", ""])
 
 const { data } = useAsyncData("/categories",() => {
     return $fetch(`${config.baseUrl}/api/admin/products/categories`, {
-         headers: {
+        headers: {
             authorization: ` Bearer ${admin.token}`
         }
     })
@@ -31,7 +31,7 @@ NuxtLayout
             h1.text-3xl Categories
             button.btn.btn-primary New category
         .categories-page-container.w-full.my-5.py-5
-            MainTable(:headers="headers")
+            MainTable(:headers="titles")
                 //tr(v-for="category in data" :key="category.id")
                     td {{ category.first_name }}
                     td {{ category.last_name }}
@@ -40,7 +40,7 @@ NuxtLayout
                         button.btn.btn-xs.btn-info update
                     td
                         button.btn.btn-xs.btn-error delete
-            .w-full.text-center(v-if="data.length === 0")
+            //.w-full.text-center(v-if="isEmpty")
                 span there is no category
 </template>
 <style lang="scss">

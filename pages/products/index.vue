@@ -7,6 +7,19 @@ definePageMeta({
 const config = useRuntimeConfig()
 const admin = useAdmin()
 
+const product = reactive({
+    name: "",
+    description: "",
+    unit_price: 0,
+    image: "",
+    category: ""
+})
+
+const options = [
+    { label: "Hot Coffee", value: "hc"},
+    { label: "Iced Coffee", value: "ic"},
+]
+
 const titles = reactive(["Product", 'Name', "Price", "in stock availability", ""])
 
 const { data } = useAsyncData("/products",() => {
@@ -27,9 +40,16 @@ const { data } = useAsyncData("/products",() => {
 <template lang="pug">
 NuxtLayout
     .products-page
+        IndexModal
+            FormKit(type="form" submit-label="Add category")
+                FormKit(v-model="product.name" validation="required" label="Name" type="text" name="product-name")
+                FormKit(v-model="product.description" validation="required" label="description" type="text" name="product-description")
+                FormKit(v-model="product.price" label="Price" type="number" name="price")
+                FormKit(v-model="product.image" label="Image" validation="required" type="file" accept=".jpg,.png" name="image")
+                //FormKit(v-model="product.category" type="autocomplete" label="Category" name="category" :options="options")
         .products-page-header.w-full.py-20.flex.justify-between
             h1.text-3xl Products
-            button.btn.btn-primary New product
+            label(for="index-modal").btn.btn-primary New product
         .products-page-container.w-full.my-5.py-5
             MainTable(:headers="titles")
                 //tr(v-for="product in data" :key="product.id")

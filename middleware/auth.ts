@@ -1,4 +1,4 @@
-import { useAdmin } from "@/stores/Admin"
+/* import { useAdmin } from "@/stores/Admin"
 const admin = useAdmin()
 
 export default defineNuxtRouteMiddleware( async (to) => {
@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware( async (to) => {
     } else if ( to.name !== "login" && !admin.admin) {
         admin.fetchCurrentAdmin()
     }
-})
+}) */
 
 /* export default defineNuxtRouteMiddleware((to, from) => {
     if (!admin.isLoggedIn) {

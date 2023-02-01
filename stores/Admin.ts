@@ -20,7 +20,7 @@ export const useAdmin = defineStore("admin", {
                         if(response.status === 401) {
                             // notify 401 error
                             console.log("ess");
-                            router().push({name: "login"})
+                            //router().push({name: "login"})
                         }
                     }
                 }).then((res: any) => {

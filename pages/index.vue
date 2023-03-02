@@ -5,7 +5,6 @@ definePageMeta({
 })
 </script>
 <template lang="pug">
-NuxtLayout
-    .title
+.title
         h1 letgoo
 </template>

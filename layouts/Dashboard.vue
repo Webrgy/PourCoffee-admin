@@ -12,7 +12,7 @@
                             Avatar
                 .bg-gray-50.w-full.overflow-y-hidden.h-full
                     .main-content
-                        .view.overflow-y-scroll
+                        .view.overflow-y-scroll(class="bg-base-100")
                             slot
                         //.indicator.absolute.z-30.bottom-5.right-6.block.text-base-200(class="xl:hidden" @click="toggleCart")
                             span.indicator-item.badge.badge-primary 99

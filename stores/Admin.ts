@@ -33,7 +33,7 @@ export const useAdmin = defineStore("admin", {
                                 admin: this.admin
                             }
                         ))
-                        router().push("/")
+                        //router().push("/")
                     }
                 }).catch((error) => {
                     return false

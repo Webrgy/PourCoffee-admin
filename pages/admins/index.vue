@@ -62,7 +62,7 @@ onMounted(() => {
 <template lang="pug">
 .admins-page
     ConfirmationModal(@confirm="deleteAdmin")
-        p are you sure you want to delete this admin? this process canot be undo
+        p are you sure you want to delete this admin? this process cannot be undo
     IndexModal
         FormKit(type="form" submit-label="Add Admin" :actios="false")
             FormKit(v-model="newAdmin.first_name" validation="required" label="First Name" type="text" name="first_name")

@@ -11,31 +11,52 @@ const titles = reactive(['First Name', "Last Name", "Email", "Role", ""])
 
 const admins = ref([])
 
-let newAdmin = reactive({
+const newAdmin = reactive({
     first_name: "",
     last_name: "",
     email: "",
     password: ""
 })
 
-const loader = ref(false)
-const getAdmins = async () => {
-    loader.value = true
-    const { data } = await $axios.get("/admins", {
-    headers: {
-        authorization: ` Bearer ${admin.token}`
-    }
+const meta = reactive({})
+
+const handleSubmit = async (fields) => {
+    const { data } = await $axios.post("/admins", {
+        admin: newAdmin
     })
-    admins.value = data.data
-    loader.value = false
+    if(data.success) {
+        getAdmins()
+    }
+    newAdmin.first_name = ""
+    newAdmin.last_name = ""
+    newAdmin.email = ""
+    newAdmin.password = ""
 }
+
+const loader = ref(false)
 
 const filterQurrey = ref("")
 
-const filterAdmins = async () => {
+const getAdmins = async (filterQurrey, page = 0, perPage = 0) => {
+    
     loader.value = true
-    const { data } =  await $axios.get(`/admins?full_name=${filterQurrey.value}`)
+    let queryOprions = ""
+
+    if(filterQurrey) {
+        queryOprions += `&full_name=${filterQurrey}`
+    }
+    if(page) {
+        queryOprions += `&page=${page}`
+    }
+    if(perPage) {
+        queryOprions += `&per_page=${perPage}`
+    }
+    console.log(queryOprions);
+    const { data } = await $axios.get(`/admins?${queryOprions}`, {
+        headers: { authorization: ` Bearer ${admin.token}` }
+    })
     admins.value = data.data
+    meta.value = data.meta
     loader.value = false
 }
 
@@ -55,6 +76,14 @@ const deleteAdmin = async (e) => {
     }
 }
 
+const previewPage = (data) => {
+    getAdmins(filterQurrey.value, data)
+}
+
+const nextPage = (data) => {
+    getAdmins(filterQurrey.value, data)
+}
+
 onMounted(() => {
     getAdmins()
 })
@@ -64,18 +93,18 @@ onMounted(() => {
     ConfirmationModal(@confirm="deleteAdmin")
         p are you sure you want to delete this admin? this process cannot be undo
     IndexModal
-        FormKit(type="form" submit-label="Add Admin" :actios="false")
-            FormKit(v-model="newAdmin.first_name" validation="required" label="First Name" type="text" name="first_name")
-            FormKit(v-model="newAdmin.last_name" validation="required" label="Last Name" type="text" name="last_name")
-            FormKit(v-model="newAdmin.email" validation="required|email" label="Email" type="email" name="email")
-            FormKit(v-model="newAdmin.password" validation="required" name="password" label="Password" type="password")
+        FormKit(type="form" submit-label="Add Admin" :actios="false" @submit="handleSubmit")
+            FormKit(v-model="newAdmin.first_name" validation="required" label="First Name" type="text" name="first_name" validation-visibility="submit")
+            FormKit(v-model="newAdmin.last_name" validation="required" label="Last Name" type="text" name="last_name" validation-visibility="submit")
+            FormKit(v-model="newAdmin.email" validation="required|email" label="Email" type="email" name="email" validation-visibility="submit")
+            FormKit(v-model="newAdmin.password" validation="required" name="password" label="Password" type="password" validation-visibility="submit")
     .admin-page-header.w-full.py-20.flex.justify-between
         h1.text-3xl Admins
         label(for="index-modal").btn.btn-primary New admin
     .admin-page-container.w-full.my-5.py-5.text-center
         .search-box(class="w-full h-20")
                 .input-group
-                    input(v-model="filterQurrey" type="text", name="" class="input input-bordered rounded-md" placeholder="search" @input="filterAdmins")
+                    input(v-model="filterQurrey" type="text", name="" class="input input-bordered rounded-md" placeholder="search" @input="getAdmins(filterQurrey)")
                     button.btn.btn-ghost.btn-active search
         .loader.w-full.mx-auto.text-center(v-if="loader")
             LoadingIndicator
@@ -89,6 +118,8 @@ onMounted(() => {
                 td(@click="getSelectedAdmin(admin.id)")
                     NuxtLink(:to="`admins/${admin.id}`").btn.btn-xs.mx-1 view
                     label(for="confirmation-modal").btn.btn-error.btn-xs.mx-1 delete
+            .table-footer
+                Pagination(:metaPages="meta.value" @prev="previewPage" @next="nextPage")
 </template>
 <style lang="scss">
 .admins-page {

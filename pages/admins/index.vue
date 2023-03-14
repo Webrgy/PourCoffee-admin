@@ -90,35 +90,35 @@ onMounted(() => {
 <template lang="pug">
 .admins-page
     ConfirmationModal(@confirm="deleteAdmin")
-        p are you sure you want to delete this admin? this process cannot be undo
+        p are you sure you want to delete this admin?
+            br
+            | this process cannot be undo
     IndexModal
         FormKit(type="form" submit-label="Add Admin" :actios="false" @submit="handleSubmit")
             FormKit(v-model="newAdmin.first_name" validation="required" label="First Name" type="text" name="first_name" validation-visibility="submit")
             FormKit(v-model="newAdmin.last_name" validation="required" label="Last Name" type="text" name="last_name" validation-visibility="submit")
             FormKit(v-model="newAdmin.email" validation="required|email" label="Email" type="email" name="email" validation-visibility="submit")
             FormKit(v-model="newAdmin.password" validation="required" name="password" label="Password" type="password" validation-visibility="submit")
-    .admin-page-header.w-full.py-20.flex.justify-between
+    .admin-page-header.w-full.py-5.mt-8.flex.justify-between
         h1.text-3xl Admins
         label(for="index-modal").btn.btn-primary New admin
-    .admin-page-container.w-full.my-5.py-5.text-center
+    .admin-page-container.w-full.my-2.py-5
         .search-box(class="w-full h-20")
-                .input-group
-                    input(v-model="filterQurrey" type="text", name="" class="input input-bordered rounded-md" placeholder="search" @input="getAdmins(filterQurrey)")
-                    button.btn.btn-ghost.btn-active search
+            input(v-model="filterQurrey" type="text", name="" class="input w-96 input-bordered rounded-md" placeholder="search" @input="getAdmins(filterQurrey)")
         .loader.w-full.mx-auto.text-center(v-if="loader")
             LoadingIndicator
-        MainTable(v-else :headers="titles")
+        MainTable(v-else :headers="titles" class="table-zebra")
             tr(v-for="admin in admins" :key="admin.id")
                 td {{ admin.first_name }}
                 td {{ admin.last_name }}
                 td {{ admin.email }}
                 td
-                    span.badge.badge-primary.text-center {{ admin.role }}
+                    span.badge.text-center(:class="admin.role === 'director' ? 'badge-primary' : 'badge-secondary'") {{ admin.role }}
                 td(@click="getSelectedAdmin(admin.id)")
-                    NuxtLink(:to="`admins/${admin.id}`").btn.btn-xs.mx-1 view
-                    label(for="confirmation-modal").btn.btn-error.btn-xs.mx-1 delete
-            .table-footer
-                Pagination(:metaPages="meta.value" @prev="previewPage" @next="nextPage")
+                    //NuxtLink(:to="`admins/${admin.id}`").btn.btn-xs.mx-1 view
+                    label(for="confirmation-modal").btn.btn-error.btn-xs.btn-outline.mx-1 delete
+        .table-footer.w-full.py-2.text-center(v-if="!loader")
+            Pagination(:metaPages="meta.value" @prev="previewPage" @next="nextPage")
 </template>
 <style lang="scss">
 .admins-page {

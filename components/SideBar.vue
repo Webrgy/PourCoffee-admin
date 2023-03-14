@@ -27,7 +27,7 @@
             li
                 NuxtLink(to="/")
                     |Dashboard
-            //li
+            li
                 NuxtLink(to="/products")
                     //IconProducts
                     |Products
@@ -46,3 +46,16 @@
                     //IconLogout
                     |Logout
 </template>
+<style lang="scss">
+.side-bar-items.items {
+    li {
+        a {
+            @apply rounded-l-3xl;
+        }
+
+        .router-link-exact-active {
+            @apply bg-primary rounded-l-3xl
+        }
+    }
+}
+</style>

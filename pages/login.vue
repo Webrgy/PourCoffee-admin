@@ -2,6 +2,7 @@
     useHead({
         title: "PourCoffee-Admin Login"
     })
+    const { $axios } = useNuxtApp()
     const currentAdmin = useAdmin()
     const config = useRuntimeConfig()
     const router = useRouter
@@ -14,21 +15,23 @@
     let hasLogged = false
     const errorMessage = ref("")
 
-    const login = async () => await useFetch(`${config.baseUrl}/api/admin/login`, {
-        method: "POST",
-        body: {
-            admin: admin
-        },
-        onResponse({ response }) {
+    const login = async () => await $axios.post(`/login`, {admin: admin }).then(res => {
+        if (res.data.data.success) {
+            console.log("login success");
+        }
+        else {
+            response.data.data.errors.base[0]
+        }
+    })
+        /* onResponse({ response }) {
             if (response._data.success) {
                 console.log("login success");
                 currentAdmin.isLoggedIn = true
                 currentAdmin.token = response._data.token
-                currentAdmin.fetchCurrentAdmin()
+                //currentAdmin.fetchCurrentAdmin()
                 /*if(Object.keys(currentAdmin.admin).length !== 0) {
                     console.log("is heeree");
                     router().push("/")
-                } */
             }
 
             else {
@@ -36,7 +39,7 @@
                 errorMessage.value = response._data.errors.base[0]
             }
         }
-    })
+    }) */
 </script>
 <template lang="pug">
 .login-page-container.px-2

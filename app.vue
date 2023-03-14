@@ -4,18 +4,8 @@
     NuxtPage
 </template>
 <script setup>
-
-  let currentAdmin = useAdmin();
-
-  onBeforeMount(() => {
-    let currentAdminSaved = JSON.parse(localStorage.getItem("PourCofeeAdminAuth") || '{}')
-
-    if(Object.keys(currentAdmin).length !== 0) {
-      currentAdmin.isLoggedIn = currentAdminSaved.isLoggedIn
-      currentAdmin.token = currentAdminSaved.token
-      currentAdmin.fetchCurrentAdmin()
-    } else {
-      currentAdmin.isLoggedIn = false
-    }
+  definePageMeta({
+    middleware: "auth"
   })
+  let currentAdmin = useAdmin();
 </script>

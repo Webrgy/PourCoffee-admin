@@ -78,7 +78,7 @@ onMounted(() => {
                     input(v-model="filterQurrey" type="text", name="" class="input input-bordered rounded-md" placeholder="search" @input="filterAdmins")
                     button.btn.btn-ghost.btn-active search
         .loader.w-full.mx-auto.text-center(v-if="loader")
-            LoadingIndecator
+            LoadingIndicator
         MainTable(v-else :headers="titles")
             tr(v-for="admin in admins" :key="admin.id")
                 td {{ admin.first_name }}

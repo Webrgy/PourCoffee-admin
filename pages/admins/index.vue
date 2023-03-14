@@ -3,8 +3,7 @@ import { useAdmin } from "~/stores/Admin"
 const { $axios } = useNuxtApp()
 
 definePageMeta({
-    layout: "dashboard",
-    //middleware: "auth"
+    layout: "dashboard"
 })
 const admin = useAdmin()
 
@@ -19,19 +18,25 @@ let newAdmin = reactive({
     password: ""
 })
 
-const filterQurrey = ref("")
+const loader = ref(false)
 const getAdmins = async () => {
+    loader.value = true
     const { data } = await $axios.get("/admins", {
     headers: {
         authorization: ` Bearer ${admin.token}`
     }
     })
     admins.value = data.data
+    loader.value = false
 }
 
+const filterQurrey = ref("")
+
 const filterAdmins = async () => {
+    loader.value = true
     const { data } =  await $axios.get(`/admins?full_name=${filterQurrey.value}`)
     admins.value = data.data
+    loader.value = false
 }
 
 const selectedAdmin = ref("")
@@ -72,7 +77,9 @@ onMounted(() => {
                 .input-group
                     input(v-model="filterQurrey" type="text", name="" class="input input-bordered rounded-md" placeholder="search" @input="filterAdmins")
                     button.btn.btn-ghost.btn-active search
-        MainTable(:headers="titles")
+        .loader.w-full.mx-auto.text-center(v-if="loader")
+            LoadingIndecator
+        MainTable(v-else :headers="titles")
             tr(v-for="admin in admins" :key="admin.id")
                 td {{ admin.first_name }}
                 td {{ admin.last_name }}

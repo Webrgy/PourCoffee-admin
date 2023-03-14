@@ -51,7 +51,6 @@ const getAdmins = async (filterQurrey, page = 0, perPage = 0) => {
     if(perPage) {
         queryOprions += `&per_page=${perPage}`
     }
-    console.log(queryOprions);
     const { data } = await $axios.get(`/admins?${queryOprions}`, {
         headers: { authorization: ` Bearer ${admin.token}` }
     })

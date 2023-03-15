@@ -9,7 +9,11 @@ const admin = useAdmin()
 
 const titles = reactive(['First Name', "Last Name", "Email", "Role", ""])
 
+const adminRoles = reactive(["director", "moderator"])
+
 const admins = ref([])
+
+const selectedRole = ref("")
 
 const newAdmin = reactive({
     first_name: "",
@@ -37,7 +41,15 @@ const loader = ref(false)
 
 const filterQurrey = ref("")
 
-const getAdmins = async (filterQurrey, page = 0, perPage = 0) => {
+const getRole = (value) => {
+    selectedRole.value = value
+    console.log(value);
+    getAdmins(filterQurrey.value, selectedRole.value)
+}
+
+const isDataEmpty = ref(false)
+
+const getAdmins = async (filterQurrey, role, page = 0, perPage = 0) => {
     
     loader.value = true
     let queryOprions = ""
@@ -51,14 +63,27 @@ const getAdmins = async (filterQurrey, page = 0, perPage = 0) => {
     if(perPage) {
         queryOprions += `&per_page=${perPage}`
     }
+    if(role) {
+        queryOprions += `&role=${role}`
+    }
     const { data } = await $axios.get(`/admins?${queryOprions}`, {
         headers: { authorization: ` Bearer ${admin.token}` }
     })
     admins.value = data.data
     meta.value = data.meta
+    if(admins.value.length === 0) {
+        isDataEmpty.value = true
+    } else {
+        isDataEmpty.value = false
+    }
     loader.value = false
 }
 
+const clearFilters = () => {
+    filterQurrey.value = ""
+    selectedRole.value = ""
+    getAdmins(filterQurrey.value, selectedRole.value)
+}
 const selectedAdmin = ref("")
 
 const getSelectedAdmin = (id) => {
@@ -76,11 +101,11 @@ const deleteAdmin = async (e) => {
 }
 
 const previewPage = (data) => {
-    getAdmins(filterQurrey.value, data)
+    getAdmins(filterQurrey.value, selectedRole.value, data)
 }
 
 const nextPage = (data) => {
-    getAdmins(filterQurrey.value, data)
+    getAdmins(filterQurrey.value, selectedRole.value, data)
 }
 
 onMounted(() => {
@@ -103,10 +128,14 @@ onMounted(() => {
         h1.text-3xl Admins
         label(for="index-modal").btn.btn-primary New admin
     .admin-page-container.w-full.my-2.py-5
-        .search-box(class="w-full h-20")
+        .filter-box(class="w-full h-20")
             input(v-model="filterQurrey" type="text", name="" class="input w-96 input-bordered rounded-md" placeholder="search" @input="getAdmins(filterQurrey)")
+            SelectList(default-option="role" :data="adminRoles" @onSelectChange="getRole")
+            button.btn.btn-secondary(@click="clearFilters") clear filters
         .loader.w-full.mx-auto.text-center(v-if="loader")
             LoadingIndicator
+        .message.w-full.text-center.text-xl(v-else-if="isDataEmpty")
+            spna No admin found!
         MainTable(v-else :headers="titles" class="table-zebra")
             tr(v-for="admin in admins" :key="admin.id")
                 td {{ admin.first_name }}
@@ -117,7 +146,7 @@ onMounted(() => {
                 td(@click="getSelectedAdmin(admin.id)")
                     //NuxtLink(:to="`admins/${admin.id}`").btn.btn-xs.mx-1 view
                     label(for="confirmation-modal").btn.btn-error.btn-xs.btn-outline.mx-1 delete
-        .table-footer.w-full.py-2.text-center(v-if="!loader")
+        .table-footer.w-full.py-2.text-center(v-if="!loader && !isDataEmpty")
             Pagination(:metaPages="meta.value" @prev="previewPage" @next="nextPage")
 </template>
 <style lang="scss">

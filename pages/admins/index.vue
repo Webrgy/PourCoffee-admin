@@ -52,21 +52,21 @@ const isDataEmpty = ref(false)
 const getAdmins = async (filterQurrey, role, page = 0, perPage = 0) => {
     
     loader.value = true
-    let queryOprions = ""
+    let queryOprions = {}
 
     if(filterQurrey) {
-        queryOprions += `&full_name=${filterQurrey}`
+        queryOprions.full_name = filterQurrey
     }
     if(page) {
-        queryOprions += `&page=${page}`
+        queryOprions.page = page
     }
     if(perPage) {
-        queryOprions += `&per_page=${perPage}`
+        queryOprions.per_page = perPage
     }
     if(role) {
-        queryOprions += `&role=${role}`
+        queryOprions.role = role
     }
-    const { data } = await $axios.get(`/admins?${queryOprions}`, {
+    const { data } = await $axios.get(`/admins`, {params: queryOprions} ,  {
         headers: { authorization: ` Bearer ${admin.token}` }
     })
     admins.value = data.data
@@ -129,7 +129,7 @@ onMounted(() => {
         label(for="index-modal").btn.btn-primary New admin
     .admin-page-container.w-full.my-2.py-5
         .filter-box(class="w-full h-20")
-            input(v-model="filterQurrey" type="text", name="" class="input w-96 input-bordered rounded-md" placeholder="search" @input="getAdmins(filterQurrey)")
+            input(v-model="filterQurrey" type="text", name="" class="input w-96 input-bordered rounded-md" placeholder="search" @input="getAdmins(filterQurrey, selectedRole)")
             SelectList(default-option="role" :data="adminRoles" @onSelectChange="getRole")
             button.btn.btn-secondary(@click="clearFilters") clear filters
         .loader.w-full.mx-auto.text-center(v-if="loader")

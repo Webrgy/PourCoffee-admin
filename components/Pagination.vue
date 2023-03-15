@@ -1,8 +1,8 @@
 <template lang="pug">
 .btn-group 
-    button.btn.btn-lg(@click="prevPage") &lt; &lt;
-    button.btn.btn-lg.btn-active Page {{ metaPages.current_page }}
-    button.btn.btn-lg(@click="nextPage") &gt; &gt;
+    button.btn(@click="prevPage") &lt; &lt;
+    button.btn.btn-active Page {{ metaPages.current_page }}
+    button.btn(@click="nextPage") &gt; &gt;
 </template>
 <script lang="ts" setup>
 const emit = defineEmits(["prev","next"])

@@ -24,7 +24,7 @@ const newAdmin: Admin = reactive({
     password: ""
 })
 
-let meta: Meta = reactive({
+let meta: MetaPages = reactive({
     current_page: 0,
     last_page: 0,
     next_page: 0,
@@ -158,7 +158,7 @@ onMounted(() => {
                     //NuxtLink(:to="`admins/${admin.id}`").btn.btn-xs.mx-1 view
                     label(for="confirmation-modal").btn.btn-error.btn-xs.btn-outline.mx-1 delete
         .table-footer.w-full.py-2.text-center(v-if="!loader && !isDataEmpty")
-            Pagination(:metaPages="meta.value" @prev="previewPage" @next="nextPage")
+            Pagination(:metaPages="meta" @prev="previewPage" @next="nextPage")
 </template>
 <style lang="scss">
 </style>

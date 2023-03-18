@@ -12,7 +12,7 @@ const isConfirmed = ref(false)
 
 const onConfirmationDone = () => {
     isConfirmed.value = true
-    emit("confirm", {success: isConfirmed.value})
+    emit("confirm", isConfirmed.value)
 }
 
 const emit = defineEmits(['confirm'])

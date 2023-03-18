@@ -1,35 +1,42 @@
-<script setup>
+<script setup lang="ts">
 import { useAdmin } from "~/stores/Admin"
-const { $axios } = useNuxtApp()
 
 definePageMeta({
     layout: "dashboard"
 })
+
+const { $axios } = useNuxtApp()
+
 const admin = useAdmin()
 
-const titles = reactive(['First Name', "Last Name", "Email", "Role", ""])
+const titles: string[] = reactive(['First Name', "Last Name", "Email", "Role", ""])
 
-const adminRoles = reactive(["director", "moderator"])
+const adminRoles: AdminRole[] = reactive(["director", "moderator"])
 
-const admins = ref([])
+let admins: Admin[] = reactive([])
 
-const selectedRole = ref("")
+const selectedRole = ref<AdminRole>("")
 
-const newAdmin = reactive({
+const newAdmin: Admin = reactive({
     first_name: "",
     last_name: "",
     email: "",
     password: ""
 })
 
-const meta = reactive({})
+let meta: Meta = reactive({
+    current_page: 0,
+    last_page: 0,
+    next_page: 0,
+    total_count: 0
+})
 
-const handleSubmit = async (fields) => {
+const handleSubmit = async (): Promise<void> => {
     const { data } = await $axios.post("/admins", {
         admin: newAdmin
     })
     if(data.success) {
-        getAdmins()
+        getAdmins(filterQurrey.value, selectedRole.value)
     }
     newAdmin.first_name = ""
     newAdmin.last_name = ""
@@ -37,41 +44,45 @@ const handleSubmit = async (fields) => {
     newAdmin.password = ""
 }
 
-const loader = ref(false)
+const loader = ref<boolean>(false)
 
-const filterQurrey = ref("")
+const filterQurrey = ref<string>("")
 
-const getRole = (value) => {
+const getRole = (value: AdminRole): void => {
     selectedRole.value = value
     console.log(value);
     getAdmins(filterQurrey.value, selectedRole.value)
 }
 
-const isDataEmpty = ref(false)
+const isDataEmpty = ref<boolean>(false)
 
-const getAdmins = async (filterQurrey, role, page = 0, perPage = 0) => {
+const getAdmins = async (filterQurrey: string, role: AdminRole, page = 0, perPage = 0): Promise<void> => {
     
     loader.value = true
-    let queryOprions = {}
+
+    let queryOptions = {
+        full_name: "",
+        role: "",
+        page:0,
+        per_page: 0
+    }
 
     if(filterQurrey) {
-        queryOprions.full_name = filterQurrey
+        queryOptions.full_name = filterQurrey
     }
     if(page) {
-        queryOprions.page = page
+        queryOptions.page = page
     }
     if(perPage) {
-        queryOprions.per_page = perPage
+        queryOptions.per_page = perPage
     }
     if(role) {
-        queryOprions.role = role
+        queryOptions.role = role
     }
-    const { data } = await $axios.get(`/admins`, {params: queryOprions} ,  {
-        headers: { authorization: ` Bearer ${admin.token}` }
-    })
-    admins.value = data.data
-    meta.value = data.meta
-    if(admins.value.length === 0) {
+    const { data } = await $axios.get(`/admins`, {params: queryOptions})
+    admins = data.data
+    meta = data.meta
+    if(admins.length === 0) {
         isDataEmpty.value = true
     } else {
         isDataEmpty.value = false
@@ -79,37 +90,37 @@ const getAdmins = async (filterQurrey, role, page = 0, perPage = 0) => {
     loader.value = false
 }
 
-const clearFilters = () => {
+const clearFilters = (): void => {
     filterQurrey.value = ""
     selectedRole.value = ""
     getAdmins(filterQurrey.value, selectedRole.value)
 }
-const selectedAdmin = ref("")
+const selectedAdmin = ref<string>("")
 
-const getSelectedAdmin = (id) => {
+const getSelectedAdmin = (id: string) => {
     selectedAdmin.value = id
 }
 
-const deleteAdmin = async (e) => {
-    if(e.success) {
+const deleteAdmin = async (e: boolean) => {
+    if(e) {
         const { data } = await $axios.delete(`/admins/${selectedAdmin.value}`)
         if (data.success) {
             selectedAdmin.value = ""
-            getAdmins()
+            getAdmins(filterQurrey.value, selectedRole.value)
         }
     }
 }
 
-const previewPage = (data) => {
+const previewPage = (data: number) => {
     getAdmins(filterQurrey.value, selectedRole.value, data)
 }
 
-const nextPage = (data) => {
+const nextPage = (data: number) => {
     getAdmins(filterQurrey.value, selectedRole.value, data)
 }
 
 onMounted(() => {
-    getAdmins()
+    getAdmins(filterQurrey.value, selectedRole.value)
 })
 </script>
 <template lang="pug">
@@ -135,7 +146,7 @@ onMounted(() => {
         .loader.w-full.mx-auto.text-center(v-if="loader")
             LoadingIndicator
         .message.w-full.text-center.text-xl(v-else-if="isDataEmpty")
-            spna No admin found!
+            span No admin found!
         MainTable(v-else :headers="titles" class="table-zebra")
             tr(v-for="admin in admins" :key="admin.id")
                 td {{ admin.first_name }}
@@ -150,7 +161,4 @@ onMounted(() => {
             Pagination(:metaPages="meta.value" @prev="previewPage" @next="nextPage")
 </template>
 <style lang="scss">
-.admins-page {
-    @apply w-11/12 xl:w-10/12 mx-auto;
-}
 </style>

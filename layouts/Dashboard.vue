@@ -34,7 +34,10 @@
 .main-content {
     @apply  w-full flex flex-row h-full overflow-y-hidden;
     .view {
-        @apply w-full
+        @apply w-full;
+        & > div {
+            @apply w-11/12 xl:w-10/12 mx-auto;
+        }
     }
 }
 </style>

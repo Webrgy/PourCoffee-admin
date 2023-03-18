@@ -51,7 +51,5 @@ NuxtLayout
                 span there is no category
 </template>
 <style lang="scss">
-.categories-page {
-    @apply w-11/12 xl:w-10/12 mx-auto;
-}
+
 </style>

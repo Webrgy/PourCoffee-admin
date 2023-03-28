@@ -6,7 +6,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   let api = axios.create({
     baseURL: defaultUrl,
     headers: {
-      common: {},
+      common: {
+      },
+      Authorization: "Bearer Test"
     },
   });
 return {

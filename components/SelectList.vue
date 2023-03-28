@@ -1,5 +1,5 @@
 <template lang="pug">
-select.select.w-full.max-w-xs(v-model="selectedOption" @change="onSelectOption")
+select.select.w-full.max-w-xs(v-model="selectedOption" @change="onSelectOption" class="w-20")
     option(disabled selected) {{ props.defaultOption }}
     option(v-for="(item, index) in props.data" :key="index")
         span  {{ item }}

@@ -36,7 +36,7 @@ const handleSubmit = async (): Promise<void> => {
         admin: newAdmin
     })
     if(data.success) {
-        getAdmins(filterQurrey.value, selectedRole.value)
+        getAdmins(fullName.value, selectedRole.value)
     }
     newAdmin.first_name = ""
     newAdmin.last_name = ""
@@ -46,24 +46,24 @@ const handleSubmit = async (): Promise<void> => {
 
 const loader = ref<boolean>(false)
 
-const filterQurrey = ref<string>("")
+const fullName = ref<string>("")
 
 const getRole = (value: AdminRole): void => {
     selectedRole.value = value
     console.log(value);
-    getAdmins(filterQurrey.value, selectedRole.value)
+    getAdmins(fullName.value, selectedRole.value)
 }
 
 const isDataEmpty = ref<boolean>(false)
 
-const getAdmins = async (filterQurrey: string, role: AdminRole, page = 0, perPage = 0): Promise<void> => {
+const getAdmins = async (fullName: string, role: AdminRole, page = 0, perPage = 0): Promise<void> => {
     
     loader.value = true
 
     let queryOptions: AdminParams = { }
 
-    if(filterQurrey) {
-        queryOptions.full_name = filterQurrey
+    if(fullName) {
+        queryOptions.full_name = fullName
     }
     if(page) {
         queryOptions.page = page
@@ -86,9 +86,9 @@ const getAdmins = async (filterQurrey: string, role: AdminRole, page = 0, perPag
 }
 
 const clearFilters = (): void => {
-    filterQurrey.value = ""
+    fullName.value = ""
     selectedRole.value = ""
-    getAdmins(filterQurrey.value, selectedRole.value)
+    getAdmins(fullName.value, selectedRole.value)
 }
 const selectedAdmin = ref<string>("")
 
@@ -101,21 +101,21 @@ const deleteAdmin = async (e: boolean) => {
         const { data } = await $axios.delete(`/admins/${selectedAdmin.value}`)
         if (data.success) {
             selectedAdmin.value = ""
-            getAdmins(filterQurrey.value, selectedRole.value)
+            getAdmins(fullName.value, selectedRole.value)
         }
     }
 }
 
-const previewPage = (data: number) => {
-    getAdmins(filterQurrey.value, selectedRole.value, data)
+const previousPage = (data: number) => {
+    getAdmins(fullName.value, selectedRole.value, data)
 }
 
 const nextPage = (data: number) => {
-    getAdmins(filterQurrey.value, selectedRole.value, data)
+    getAdmins(fullName.value, selectedRole.value, data)
 }
 
 onMounted(() => {
-    getAdmins(filterQurrey.value, selectedRole.value)
+    getAdmins(fullName.value, selectedRole.value)
 })
 </script>
 <template lang="pug">
@@ -135,7 +135,7 @@ onMounted(() => {
         label(for="index-modal").btn.btn-primary New admin
     .admin-page-container.w-full.my-2.py-5
         .filter-box(class="w-full h-20")
-            input(v-model="filterQurrey" type="text", name="" class="input w-96 input-bordered rounded-md" placeholder="search" @input="getAdmins(filterQurrey, selectedRole)")
+            input(v-model="fullName" type="text", name="" class="input w-96 input-bordered rounded-md" placeholder="search" @input="getAdmins(fullName, selectedRole)")
             SelectList(default-option="role" :data="adminRoles" @onSelectChange="getRole")
             button.btn.btn-secondary(@click="clearFilters") clear filters
         .loader.w-full.mx-auto.text-center(v-if="loader")
@@ -153,7 +153,7 @@ onMounted(() => {
                     //NuxtLink(:to="`admins/${admin.id}`").btn.btn-xs.mx-1 view
                     label(for="confirmation-modal").btn.btn-error.btn-xs.btn-outline.mx-1 delete
         .table-footer.w-full.py-2.text-center(v-if="!loader && !isDataEmpty")
-            Pagination(:metaPages="meta" @prev="previewPage" @next="nextPage")
+            Pagination(:metaPages="meta" @prev="previousPage" @next="nextPage")
 </template>
 <style lang="scss">
 </style>

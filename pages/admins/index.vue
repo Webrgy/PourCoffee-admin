@@ -60,12 +60,7 @@ const getAdmins = async (filterQurrey: string, role: AdminRole, page = 0, perPag
     
     loader.value = true
 
-    let queryOptions = {
-        full_name: "",
-        role: "",
-        page:0,
-        per_page: 0
-    }
+    let queryOptions: AdminParams = { }
 
     if(filterQurrey) {
         queryOptions.full_name = filterQurrey

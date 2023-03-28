@@ -16,4 +16,11 @@ declare global {
         last_page: number,
         total_count: number
     }
+
+    interface AdminParams {
+        full_name?: string;
+        role?: string;
+        page?: number;
+        per_page?: number;
+    }
 }
